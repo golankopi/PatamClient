@@ -80,6 +80,5 @@ public class PipeGameDrawer extends Canvas{
 					gc.fillRoundRect(j*w + (w/4), i*h + h/4, w/2, h/2, W/4, H/4);
 				}
 			}
-
 	}
 }
