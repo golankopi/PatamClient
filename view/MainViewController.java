@@ -6,10 +6,14 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;
@@ -17,12 +21,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
 import model.Level;
 import model.HTTPServerSolver;
 import solution.ServerSolver;
+import viewModel.LevelViewModel;
 
-public class MainViewController implements Initializable{
-	private Level level;
+public class MainViewController implements Initializable, Observer{
+	LevelViewModel levelViewModel;
 	private ServerSolver serverSolver;
 
 	@FXML
@@ -49,17 +55,15 @@ public class MainViewController implements Initializable{
 		String path = chosenFile.getPath();
 
 		System.out.println(path);
-		this.level = new Level(chosenFile);
-		pipeGameDrawer.setMatrix(level.matrix);
-		
-		System.out.println(level);
+		levelViewModel.loadLevel(chosenFile);
+		pipeGameDrawer.redraw();
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		if (level != null) {
-			pipeGameDrawer.setMatrix(level.matrix);
-		}
+//		if (level != null) {
+//			pipeGameDrawer.setMatrix(level.matrix);
+//		}
 		
 		pipeGameDrawer.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -67,10 +71,20 @@ public class MainViewController implements Initializable{
 			public void handle(MouseEvent event) {
 				System.out.println(event.getX());
 				System.out.println(event.getY());
-				pipeGameDrawer.setChange(event.getX(), event.getY());
+				int j = pipeGameDrawer.getColFromX(event.getX());
+				int i = pipeGameDrawer.getRowFromY(event.getY());
+				levelViewModel.turn(i, j);
+				pipeGameDrawer.redraw();
 			}
 		});
+		
 	}
+	
+	public void setViewModel(LevelViewModel vm) {
+		this.levelViewModel=vm;
+		vm.charMatrix.bindBidirectional(pipeGameDrawer.charMatrix);
+		}
+
 	
 	public void solve() {
 		try {
@@ -83,35 +97,40 @@ public class MainViewController implements Initializable{
 		
 		ArrayList<String> solvedLevel;
 		try {
-			solvedLevel = serverSolver.solve(this.level.matrix);
+			solvedLevel = serverSolver.solve(this.levelViewModel.charMatrix.get());
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
 		}
-		AnimationTimer at = new AnimationTimer() {
+		
+		Timeline sortLoop = new Timeline();
+		
+		double curDelay = 0.01;
+		
+		for (int i=0; i < solvedLevel.size(); i++) {
+			String currentLine = solvedLevel.get(i);
+			System.out.println(currentLine);
+			
+			int row = Character.getNumericValue(currentLine.charAt(0));
+			int col = Character.getNumericValue(currentLine.charAt(2));
+			int currentMoves = Character.getNumericValue(currentLine.charAt(4));
 
-			@Override
-			public void handle(long arg0) {
-				for (int i=0; i < solvedLevel.size(); i++) {
-					String currentLine = solvedLevel.get(i);
-					System.out.println(currentLine);
-					
-					int row = Character.getNumericValue(currentLine.charAt(0));
-					int col = Character.getNumericValue(currentLine.charAt(2));
-					int currentMoves = Character.getNumericValue(currentLine.charAt(4));
-
-					System.out.println(currentMoves);
-					for(int k = 0; k < currentMoves; k++) {
-						System.out.printf("%d, %d\n",row, col);
-
-						pipeGameDrawer.drawTurn(row, col);
-						//TODO make animation
-					}
-				}
-				stop();
+			System.out.println(currentMoves);
+			for(int k = 0; k < currentMoves; k++) {
+				System.out.printf("%d, %d - du: %.2f \n",row, col, curDelay);
+				KeyFrame kf = new KeyFrame(Duration.seconds(curDelay), actionEvent -> {
+					levelViewModel.turn(row, col);
+					pipeGameDrawer.redraw();
+				});
+				curDelay += 0.1;
+	            sortLoop.getKeyFrames().add(kf);
 			}
-		};
-		at.start();
+		}
+        sortLoop.play();
 
+	}
+		
+	@Override
+	public void update(Observable o, Object arg) {
 	}
 }
