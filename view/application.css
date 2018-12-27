@@ -1,1 +1,22 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+
+.root {
+    	-fx-background-image: url("resources/dark/background.png");
+    -fx-background-repeat: stretch; 
+	-fx-background-position: center center;
+}
+
+.label
+{
+	-fx-background-color: red;
+	-fx-font-family: "arial";
+	-fx-font-size: 14px;
+	-fx-font-style: normal;
+	-fx-font-weight: normal;
+}
+
+.button
+{
+
+}
