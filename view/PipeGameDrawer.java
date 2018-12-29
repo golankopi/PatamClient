@@ -1,9 +1,14 @@
 package view;
 
+import java.io.File;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Rectangle;
 import model.Matrix;
 
@@ -14,6 +19,7 @@ public class PipeGameDrawer extends Canvas{
 public PipeGameDrawer() {
 		super();
 		this.charMatrix = new SimpleObjectProperty<Matrix>();
+
 	}
 
 //	public Matrix getMatrix() {
@@ -24,7 +30,10 @@ public PipeGameDrawer() {
 //		this.charMatrix = matrix;
 //		redraw();
 //	}
+	
 
+
+	
 	public void setChange(double x, double y) {
 		double W = getWidth();
 		double H = getHeight();
@@ -73,32 +82,40 @@ public PipeGameDrawer() {
 			for (int j=0; j<charMatrix.get().getCols(); j++)
 			{
 				if (level[i][j] == '-') {
-					gc.fillRect(j*w, (i*h) + (h/4), w, h - (h/2));
+					gc.drawImage(new Image("/view/resources/dark/-pipe.jpg"), j*w, (i*h) + (h/4), w, h - (h/2) );
+					//gc.fillRect(j*w, (i*h) + (h/4), w, h - (h/2));
 				}
 				else if (level[i][j] == '|') {
-					gc.fillRect(j*w + (w/4), (i*h), w - (w/2), h);
+					gc.drawImage(new Image("/view/resources/dark/pipe.jpg"), j*w + (w/4), (i*h), w - (w/2), h );
+					//gc.fillRect(j*w + (w/4), (i*h), w - (w/2), h);
 				}
 				else if (level[i][j] == 'L'){
-					gc.fillRect(j*w + (w/4), i*h, w - (w/2), h/4);
-					gc.fillRect(j*w + (w/4), i*h + h/4, w - (w/4), h/2);
+					gc.drawImage(new Image("/view/resources/dark/Lpipe.jpg"), j*w, (i*h) + (h/4), w, h - (h/2) );
+//					gc.fillRect(j*w + (w/4), i*h, w - (w/2), h/4);
+//					gc.fillRect(j*w + (w/4), i*h + h/4, w - (w/4), h/2);
 				}
 				else if (level[i][j] == 'F'){
-					gc.fillRect(j*w + (w/4), i*h + 3*h/4, w - (w/2), h/4);
-					gc.fillRect(j*w + (w/4), i*h + h/4, w - (w/4), h/2);
+					gc.drawImage(new Image("/view/resources/dark/Fpipe.jpg"), j*w, (i*h) + (h/4), w, h - (h/2));
+//					gc.fillRect(j*w + (w/4), i*h + 3*h/4, w - (w/2), h/4);
+//					gc.fillRect(j*w + (w/4), i*h + h/4, w - (w/4), h/2);
 				}
 				else if (level[i][j] == '7'){
-					gc.fillRect(j*w + (w/4), i*h + 3*h/4, w - (w/2), h/4);
-					gc.fillRect(j*w, i*h + h/4, w - (w/4), h/2);
+					gc.drawImage(new Image("/view/resources/dark/7pipe.jpg"),j*w, (i*h) + (h/4), w, h - (h/2) );
+//					gc.fillRect(j*w + (w/4), i*h + 3*h/4, w - (w/2), h/4);
+//					gc.fillRect(j*w, i*h + h/4, w - (w/4), h/2);
 				}
 				else if (level[i][j] == 'J'){
-					gc.fillRect(j*w + (w/4), i*h, w - (w/2), h/4);
-					gc.fillRect(j*w, i*h + h/4, w - (w/4), h/2);
+					gc.drawImage(new Image("/view/resources/dark/7pipe.jpg"), j*w, (i*h) + (h/4), w, h - (h/2));
+//					gc.fillRect(j*w + (w/4), i*h, w - (w/2), h/4);
+//					gc.fillRect(j*w, i*h + h/4, w - (w/4), h/2);
 				}
 				else if (level[i][j] == 's'){
-					gc.fillRoundRect(j*w + (w/4), i*h + h/4, w/2, h/2,  W/4, H/4);
+					gc.drawImage(new Image("/view/resources/start.jpg"), j*w, (i*h) + (h/4), w, h - (h/2));
+					//gc.fillRoundRect(j*w + (w/4), i*h + h/4, w/2, h/2,  W/4, H/4);
 				}
 				else if (level[i][j] == 'g'){
-					gc.fillRoundRect(j*w + (w/4), i*h + h/4, w/2, h/2, W/4, H/4);
+					gc.drawImage(new Image("/view/resources/goal.png"), j*w, (i*h) + (h/4), w, h - (h/2));
+					//gc.fillRoundRect(j*w + (w/4), i*h + h/4, w/2, h/2, W/4, H/4);
 				}
 			}
 	}

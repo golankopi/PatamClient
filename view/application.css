@@ -2,14 +2,13 @@
 
 
 .root {
-    	-fx-background-image: url("resources/dark/background.png");
+   	-fx-background-image: url("resources/dark/background.png");
     -fx-background-repeat: stretch; 
 	-fx-background-position: center center;
 }
 
 .label
 {
-	-fx-background-color: red;
 	-fx-font-family: "arial";
 	-fx-font-size: 14px;
 	-fx-font-style: normal;
@@ -18,5 +17,5 @@
 
 .button
 {
-
+	-fx-background-image: url("resources/light/background.png");
 }
