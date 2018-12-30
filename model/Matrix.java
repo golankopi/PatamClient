@@ -16,7 +16,7 @@ public class Matrix {
 		rows = spllitedLevel.length;
 		cols = spllitedLevel[0].length();
 		if(rows <= 0 || cols <= 0)
-			throw new IllegalArgumentException("Problem initiate matrix becuse of file missmatch rows:"+rows + " cols:"+ cols );
+			throw new IllegalArgumentException("Problem initiate matrix because of file mismatch rows:"+rows + " cols:"+ cols );
 		
 		this.matrix = new char[rows][cols];
 		for(int i = 0; i < rows; i++)

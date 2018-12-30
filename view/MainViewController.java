@@ -1,11 +1,15 @@
 package view;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
@@ -18,9 +22,13 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Level;
 import model.HTTPServerSolver;
@@ -31,9 +39,20 @@ public class MainViewController implements Initializable, Observer{
 	LevelViewModel levelViewModel;
 	private ServerSolver serverSolver;
 
+	int steps = 0;
+	int playDuration = 0;
+	Timeline timer;
+	
+	
+	
 	@FXML
 	PipeGameDrawer pipeGameDrawer;
 
+	@FXML
+	private TextField TextTimer = new TextField();
+	@FXML
+	private TextField TextSteps = new TextField();
+	
 	public void LoadLevel() throws IOException {
 		System.out.println("load!");
 		FileChooser fileChooser = new FileChooser();
@@ -41,7 +60,7 @@ public class MainViewController implements Initializable, Observer{
 		//Extension filter
 		FileChooser.ExtensionFilter extentionFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
 		fileChooser.getExtensionFilters().add(extentionFilter);
-
+		fileChooser.setTitle("Load Level");
 		File userDirectory = new File("c:/");
 		fileChooser.setInitialDirectory(userDirectory);
 		
@@ -53,11 +72,61 @@ public class MainViewController implements Initializable, Observer{
 		if (chosenFile == null) return;
 		
 		String path = chosenFile.getPath();
-
+		loadPlayerProgression(path);
 		System.out.println(path);
 		levelViewModel.loadLevel(chosenFile);
 		pipeGameDrawer.redraw();
 	}
+
+	private void loadPlayerProgression(String path) {
+		
+		List<char[]> gameBuilder = new ArrayList<char[]>();
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(path));
+			String line;
+			while((line = br.readLine()) != null) {
+				if (line.contains("Steps:")) {
+					this.steps = Integer.parseInt(line.split(":")[1]);
+				} 
+				else if(line.contains("Duration:")) {
+					this.playDuration = Integer.parseInt(line.split(":")[1]);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	public void saveLevel() {
+	
+		FileChooser fc = new FileChooser();
+		fc.setTitle("Save Level");
+		fc.setInitialDirectory(new File("c:/"));
+		FileChooser.ExtensionFilter extentionFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
+		fc.getExtensionFilters().add(extentionFilter);
+		File chosenFile = fc.showSaveDialog(null);
+	
+		if (chosenFile == null) return;
+		
+//		try {
+//			PrintWriter pw = new PrintWriter(chosenFile);
+//			pw.println("Steps:" + steps);
+//			pw.println("Duration:" + playDuration);
+//			for (int i=0; i < pipeGameDrawer.getHeight(); i++) {
+//				pw.println(new String(pipeGameDrawer.getMatrix())
+//			}
+//		}
+		savePlayerProgression();
+	
+	}
+	private void savePlayerProgression() {
+		// TODO Implement the actual saving of the game board
+		
+	}
+	
+	
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -84,7 +153,52 @@ public class MainViewController implements Initializable, Observer{
 		this.levelViewModel=vm;
 		vm.charMatrix.bindBidirectional(pipeGameDrawer.charMatrix);
 		}
-
+	
+	@FXML
+	private void pipeTheme() {
+		if (pipeGameDrawer.getTheme() == "/resources/") 
+			return;
+		pipeGameDrawer.setTheme("/resources/");
+		//pipeGameDrawer.stopMusic();
+		//pipeGameDrawer.loadMusic();
+		pipeGameDrawer.redraw();
+		//pipeGameDrawer.playMusic();
+	}
+	@FXML
+	private void roadTheme() {
+		if (pipeGameDrawer.getTheme() == "/resources/") 
+			return;
+		pipeGameDrawer.setTheme("/resources/");
+		//pipeGameDrawer.stopMusic();
+		//pipeGameDrawer.loadMusic();
+		pipeGameDrawer.redraw();
+		//pipeGameDrawer.playMusic();
+	}
+	
+	public void changeTheme(String theme) {
+		this.pipeGameDrawer.setTheme(theme);
+	}
+	
+	public void initTimer() {
+		if (timer != null) 
+			timer.stop();
+		
+	}
+	
+	public void configureSettings() {		
+		try {
+			FXMLLoader fxmlLoader = new FXMLLoader();
+			fxmlLoader.setLocation(getClass().getResource("./settings.fxml"));
+			Scene scene = new Scene(fxmlLoader.load(), 400, 200);
+			Stage stage = new Stage();
+			stage.setTitle("Server Settings");
+			stage.setScene(scene);
+			stage.show();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	public void solve() {
 		try {

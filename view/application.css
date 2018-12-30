@@ -2,7 +2,7 @@
 
 
 .root {
-   	-fx-background-image: url("resources/dark/background.png");
+   
     -fx-background-repeat: stretch; 
 	-fx-background-position: center center;
 }
@@ -17,5 +17,5 @@
 
 .button
 {
-	-fx-background-image: url("resources/light/background.png");
+
 }
