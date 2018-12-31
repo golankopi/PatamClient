@@ -31,6 +31,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Level;
+import model.Matrix;
 import model.HTTPServerSolver;
 import solution.ServerSolver;
 import viewModel.LevelViewModel;
@@ -93,6 +94,7 @@ public class MainViewController implements Initializable, Observer{
 					this.playDuration = Integer.parseInt(line.split(":")[1]);
 				}
 			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -156,9 +158,9 @@ public class MainViewController implements Initializable, Observer{
 	
 	@FXML
 	private void pipeTheme() {
-		if (pipeGameDrawer.getTheme() == "/resources/") 
+		if (pipeGameDrawer.getTheme() == "/resources/dark") 
 			return;
-		pipeGameDrawer.setTheme("/resources/");
+		pipeGameDrawer.setTheme("./view/resources/dark");
 		//pipeGameDrawer.stopMusic();
 		//pipeGameDrawer.loadMusic();
 		pipeGameDrawer.redraw();
@@ -166,9 +168,9 @@ public class MainViewController implements Initializable, Observer{
 	}
 	@FXML
 	private void roadTheme() {
-		if (pipeGameDrawer.getTheme() == "/resources/") 
+		if (pipeGameDrawer.getTheme() == "/resources/light") 
 			return;
-		pipeGameDrawer.setTheme("/resources/");
+		pipeGameDrawer.setTheme("./view/resources/light");
 		//pipeGameDrawer.stopMusic();
 		//pipeGameDrawer.loadMusic();
 		pipeGameDrawer.redraw();

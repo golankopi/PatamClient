@@ -101,7 +101,7 @@ public PipeGameDrawer() {
 	}
 	
 	public void redraw(){
-		System.out.println( "theme: " + getTheme());
+		System.out.println( "theme: " + getTheme() + "/background.jpg");
 		
 		double W = getWidth();
 		double H = getHeight();
@@ -112,8 +112,13 @@ public PipeGameDrawer() {
 		char[][] level = charMatrix.get().getMatrix();
 		
 		GraphicsContext gc = getGraphicsContext2D();
-		gc.drawImage(new Image(theme.get() + "/blue_background.jpg"), 0, 0, W, H);
-		
+		System.out.println("Working Directory = " +
+	              System.getProperty("user.dir"));
+		try {
+		gc.drawImage(new Image(theme.get() + "/background.jpg"), 0, 0, W, H);
+		}catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
 		for (int i=0; i<charMatrix.get().getRows(); i++)
 			for (int j=0; j<charMatrix.get().getCols(); j++)
 			{
