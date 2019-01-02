@@ -97,6 +97,7 @@ public PipeGameDrawer() {
 	
 	public void playMusic() {
 		if (mediaPlayer == null) return;
+		System.out.println("playMusic()");
 		mediaPlayer.play();
 	}
 	

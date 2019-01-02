@@ -15,18 +15,26 @@ import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -39,20 +47,40 @@ import viewModel.LevelViewModel;
 public class MainViewController implements Initializable, Observer{
 	LevelViewModel levelViewModel;
 	private ServerSolver serverSolver;
-
-	int steps = 0;
-	int playDuration = 0;
-	Timeline timer;
+	private static final Integer STARTTIME = 0;
+	Integer steps = 0;
+	private IntegerProperty playDuration = new SimpleIntegerProperty(STARTTIME);
 	
 	
+	
+	private Timeline timer;
 	
 	@FXML
 	PipeGameDrawer pipeGameDrawer;
 
 	@FXML
-	private TextField TextTimer = new TextField();
+	private Text stepsText = new Text();
 	@FXML
-	private TextField TextSteps = new TextField();
+	private Text durationText = new Text();
+	@FXML
+	private Button startButton = new Button();
+	@FXML 
+	private Button pauseButton = new Button();
+	
+	
+	
+	
+	/*
+	 * TODO: This is the onAction for binding the timer to the UI. 
+	 * 			For some reason it throw a compilation error
+	 */
+//	startButton.setOnAction(new EventHandler() {
+//		
+//		public void handle(ActionEvent event) {
+//			initTimer();
+//			}
+//		});
+	
 	
 	public void LoadLevel() throws IOException {
 		System.out.println("load!");
@@ -91,7 +119,7 @@ public class MainViewController implements Initializable, Observer{
 					this.steps = Integer.parseInt(line.split(":")[1]);
 				} 
 				else if(line.contains("Duration:")) {
-					this.playDuration = Integer.parseInt(line.split(":")[1]);
+					this.playDuration.set( Integer.parseInt(line.split(":")[1]));
 				}
 			}
 			
@@ -161,10 +189,10 @@ public class MainViewController implements Initializable, Observer{
 		if (pipeGameDrawer.getTheme() == "/resources/dark") 
 			return;
 		pipeGameDrawer.setTheme("./view/resources/dark");
-		//pipeGameDrawer.stopMusic();
-		//pipeGameDrawer.loadMusic();
+		pipeGameDrawer.stopMusic();
+		pipeGameDrawer.loadMusic();
 		pipeGameDrawer.redraw();
-		//pipeGameDrawer.playMusic();
+		pipeGameDrawer.playMusic();
 	}
 	@FXML
 	private void roadTheme() {
@@ -184,7 +212,13 @@ public class MainViewController implements Initializable, Observer{
 	public void initTimer() {
 		if (timer != null) 
 			timer.stop();
-		
+		durationText.setText(Integer.toString(playDuration.get()));
+		timer = new Timeline(new KeyFrame(Duration.millis(1000), e->  {
+			playDuration.set(playDuration.get() + 1);
+			durationText.setText(Integer.toString(playDuration.get()));
+		}));
+		timer.setCycleCount(Animation.INDEFINITE);
+		timer.play();
 	}
 	
 	public void configureSettings() {		
