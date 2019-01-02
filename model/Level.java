@@ -9,9 +9,7 @@ import java.util.Observable;
 
 public class Level extends Observable{
 	private int moves;
-	private int startTime;
-	private int endTime;
-	private int previousTime; //when level is saved
+	private int time;
 	public Matrix matrix;
 
 	public Matrix getMatrix() {
@@ -21,7 +19,26 @@ public class Level extends Observable{
 	public void setMatrix(Matrix matrix) {
 		this.matrix = matrix;
 	}
+	
+	public void incTime() {
+		if (matrix != null) {
+			this.time++;
+			setChanged();
+			notifyObservers();
+		}
+	}
+	
+	public int getTime() {
+		return time;
+	}
 
+	public int getMoves() {
+		return moves;
+	}
+
+	public void setMoves(int moves) {
+		this.moves = moves;
+	}
 	
 	public void loadFromFile (File file) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(file));
@@ -30,12 +47,17 @@ public class Level extends Observable{
 		while ((line = br.readLine()) != null) 
 			level += line + System.lineSeparator();
 		this.matrix = new Matrix(level);
+		this.moves=0;
+		this.time=0;
 		setChanged();
 		notifyObservers();
 	}
 	
 	public void turn(int i, int j) {
 		this.matrix.turn(i, j);
+		this.moves++;
+		System.out.println("inner moves?");
+		System.out.println(moves);
 		setChanged();
 		notifyObservers();
 	}

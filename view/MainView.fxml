@@ -53,12 +53,12 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </Button>
-            <Button fx:id="startButton" layoutX="15.0" layoutY="15.0" mnemonicParsing="false" onAction="#solve" prefHeight="25.0" prefWidth="58.0" text="Start">
+            <Button layoutX="15.0" layoutY="15.0" mnemonicParsing="false" onAction="#start" prefHeight="25.0" prefWidth="58.0" text="Start">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </Button>
-            <Button fx:id="pauseButton" layoutX="15.0" layoutY="50.0" mnemonicParsing="false" onAction="#solve" prefHeight="25.0" prefWidth="58.0" text="Pause">
+            <Button layoutX="15.0" layoutY="50.0" mnemonicParsing="false" onAction="#stop" prefHeight="25.0" prefWidth="58.0" text="Pause">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>

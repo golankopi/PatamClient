@@ -54,6 +54,7 @@ public class MainViewController implements Initializable, Observer{
 	
 	
 	private Timeline timer;
+	private Timeline durationTimer;
 	
 	@FXML
 	PipeGameDrawer pipeGameDrawer;
@@ -62,12 +63,7 @@ public class MainViewController implements Initializable, Observer{
 	private Text stepsText = new Text();
 	@FXML
 	private Text durationText = new Text();
-	@FXML
-	private Button startButton = new Button();
-	@FXML 
-	private Button pauseButton = new Button();
-	
-	
+
 	
 	
 	/*
@@ -81,6 +77,15 @@ public class MainViewController implements Initializable, Observer{
 //			}
 //		});
 	
+	public void start() {
+		if (durationTimer != null)
+			durationTimer.play();
+	}
+	
+	public void stop() {
+		if (durationTimer != null)
+			durationTimer.stop();
+	}
 	
 	public void LoadLevel() throws IOException {
 		System.out.println("load!");
@@ -105,6 +110,7 @@ public class MainViewController implements Initializable, Observer{
 		System.out.println(path);
 		levelViewModel.loadLevel(chosenFile);
 		pipeGameDrawer.redraw();
+		durationTimer.play();
 	}
 
 	private void loadPlayerProgression(String path) {
@@ -174,14 +180,26 @@ public class MainViewController implements Initializable, Observer{
 				int i = pipeGameDrawer.getRowFromY(event.getY());
 				levelViewModel.turn(i, j);
 				pipeGameDrawer.redraw();
+				durationTimer.play();
 			}
 		});
 		
+		durationTimer = new Timeline(
+			    new KeyFrame(
+			        Duration.millis( 1000 ),
+			        event -> {
+			            levelViewModel.incTime();
+			        }
+			    )
+		);
+		durationTimer.setCycleCount( Animation.INDEFINITE );
 	}
 	
 	public void setViewModel(LevelViewModel vm) {
 		this.levelViewModel=vm;
 		vm.charMatrix.bindBidirectional(pipeGameDrawer.charMatrix);
+		vm.moves.bindBidirectional(this.stepsText.textProperty());
+		vm.time.bindBidirectional(this.durationText.textProperty());
 		}
 	
 	@FXML
