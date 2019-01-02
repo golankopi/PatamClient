@@ -124,6 +124,7 @@ public PipeGameDrawer() {
 			for (int j=0; j<charMatrix.get().getCols(); j++)
 			{
 				if (level[i][j] == '-') {
+					System.out.println(theme.get());
 					gc.drawImage(new Image(theme.get() + "/-pipe.jpg"), j*w, (i*h) + (h/4), w, h - (h/2) );
 					//gc.fillRect(j*w, (i*h) + (h/4), w, h - (h/2));
 				}
