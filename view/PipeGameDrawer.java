@@ -20,7 +20,7 @@ public class PipeGameDrawer extends Canvas{
 	
 	SimpleObjectProperty<Matrix> charMatrix;
 	private StringProperty theme;
-	private MediaPlayer mediaPlayer;	
+	private ViewMediaPlayer mediaPlayer;	
 	
 public PipeGameDrawer() {
 		super();
@@ -83,28 +83,22 @@ public PipeGameDrawer() {
 	}
 	
 	public void loadMusic() {
-		try {
-			Media media = new Media(new File(theme.get() + "/Comfort_Fit_-_03_-_Sorry.mp3").toURI().toString());
-			mediaPlayer = new MediaPlayer(media);
-			mediaPlayer.setCycleCount(Integer.MAX_VALUE); // play for "infinite" time 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		mediaPlayer = ViewMediaPlayer.getInstance();
 	}
 	
-	public void stopMusic() {
-		if (mediaPlayer == null) return;
-		mediaPlayer.stop();
-	}
+//	public void stopMusic() {
+//		if (mediaPlayer == null) return;
+//		mediaPlayer.stop();
+//	}
 	
-	public void playMusic() {
-		if (mediaPlayer == null) return;
-		System.out.println("playMusic()");
-		mediaPlayer.play();
-	}
+//	public void playMusic() {
+//		if (mediaPlayer == null) return;
+//		System.out.println("playMusic()");
+//		mediaPlayer.play();
+//	}
 	
 	public void redraw(){
-		System.out.println( "theme: " + getTheme() + "/background.jpg");
+		//System.out.println( "theme: " + getTheme() + "/background.jpg");
 		
 		double W = getWidth();
 		double H = getHeight();

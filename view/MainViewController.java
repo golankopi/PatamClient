@@ -227,10 +227,10 @@ public class MainViewController implements Initializable, Observer{
 		if (pipeGameDrawer.getTheme() == "/resources/dark") 
 			return;
 		pipeGameDrawer.setTheme("./view/resources/dark");
-		pipeGameDrawer.stopMusic();
+	//	pipeGameDrawer.stopMusic();
 		pipeGameDrawer.loadMusic();
 		pipeGameDrawer.redraw();
-		pipeGameDrawer.playMusic();
+		//pipeGameDrawer.playMusic();
 	}
 	@FXML
 	private void roadTheme() {
@@ -238,7 +238,7 @@ public class MainViewController implements Initializable, Observer{
 			return;
 		pipeGameDrawer.setTheme("./view/resources/light");
 		//pipeGameDrawer.stopMusic();
-		//pipeGameDrawer.loadMusic();
+		pipeGameDrawer.loadMusic();
 		pipeGameDrawer.redraw();
 		//pipeGameDrawer.playMusic();
 	}
