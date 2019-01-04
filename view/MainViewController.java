@@ -22,6 +22,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -50,6 +51,8 @@ public class MainViewController implements Initializable, Observer{
 	private static final Integer STARTTIME = 0;
 	Integer steps = 0;
 	private IntegerProperty playDuration = new SimpleIntegerProperty(STARTTIME);
+	private IntegerProperty PORT = new SimpleIntegerProperty();
+	private StringProperty SERVER = new SimpleStringProperty();
 	
 	
 	
@@ -63,7 +66,10 @@ public class MainViewController implements Initializable, Observer{
 	private Text stepsText = new Text();
 	@FXML
 	private Text durationText = new Text();
-
+	@FXML
+	private TextField portTextField;
+	@FXML
+	private TextField serverTextField;
 	
 	
 	/*
@@ -106,36 +112,36 @@ public class MainViewController implements Initializable, Observer{
 		if (chosenFile == null) return;
 		
 		String path = chosenFile.getPath();
-		loadPlayerProgression(path);
+		
 		System.out.println(path);
 		levelViewModel.loadLevel(chosenFile);
 		pipeGameDrawer.redraw();
 		durationTimer.play();
 	}
 
-	private void loadPlayerProgression(String path) {
-		
-		List<char[]> gameBuilder = new ArrayList<char[]>();
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(path));
-			String line;
-			while((line = br.readLine()) != null) {
-				if (line.contains("Steps:")) {
-					this.steps = Integer.parseInt(line.split(":")[1]);
-				} 
-				else if(line.contains("Duration:")) {
-					this.playDuration.set( Integer.parseInt(line.split(":")[1]));
-				}
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
+//	private void loadPlayerProgression(String path) {
+//		
+//		List<char[]> gameBuilder = new ArrayList<char[]>();
+//		BufferedReader br = null;
+//		try {
+//			br = new BufferedReader(new FileReader(path));
+//			String line;
+//			while((line = br.readLine()) != null) {
+//				if (line.contains("Steps:")) {
+//					this.steps = Integer.parseInt(line.split(":")[1]);
+//				} 
+//				else if(line.contains("Duration:")) {
+//					this.playDuration.set( Integer.parseInt(line.split(":")[1]));
+//				}
+//			}
+//			
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		
+//	}
 
-	public void saveLevel() {
+	public void saveLevel() throws IOException {
 	
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Save Level");
@@ -146,6 +152,7 @@ public class MainViewController implements Initializable, Observer{
 	
 		if (chosenFile == null) return;
 		
+		levelViewModel.saveLevelProgressionToFile(chosenFile);
 //		try {
 //			PrintWriter pw = new PrintWriter(chosenFile);
 //			pw.println("Steps:" + steps);
@@ -154,16 +161,29 @@ public class MainViewController implements Initializable, Observer{
 //				pw.println(new String(pipeGameDrawer.getMatrix())
 //			}
 //		}
-		savePlayerProgression();
-	
 	}
-	private void savePlayerProgression() {
-		// TODO Implement the actual saving of the game board
-		
-	}
-	
-	
 
+	public void loadSavedGame() throws IOException {
+	
+		FileChooser fileChooser = new FileChooser();
+
+		//Extension filter
+		FileChooser.ExtensionFilter extentionFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
+		fileChooser.getExtensionFilters().add(extentionFilter);
+		fileChooser.setTitle("Load Level");
+		File userDirectory = new File("c:/");
+		fileChooser.setInitialDirectory(userDirectory);
+		
+		//Choose the file, make sure a file was selected
+		File chosenFile;
+		chosenFile = fileChooser.showOpenDialog(null);
+
+		
+		levelViewModel.loadProgressionFromFile(chosenFile);
+	}
+	
+	
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 //		if (level != null) {

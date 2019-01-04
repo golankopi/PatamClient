@@ -23,8 +23,9 @@
         <menus>
           <Menu mnemonicParsing="false" text="Level">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#LoadLevel" text="Load Level" />
+              <MenuItem mnemonicParsing="false" onAction="#LoadLevel" text="Load New Level" />
               <MenuItem mnemonicParsing="false" onAction="#saveLevel" text="Save Level" />
+              <MenuItem mnemonicParsing="false" onAction="#loadSavedGame" text="Continue Saved Game" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">

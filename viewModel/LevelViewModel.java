@@ -33,6 +33,13 @@ public class LevelViewModel extends Observable implements Observer{
 		this.level.loadFromFile(chosenFile);
 	}
 	
+	public void saveLevelProgressionToFile(File chsoenFile) throws IOException{
+		this.level.saveLevelProgressionToFile(chsoenFile);
+	}
+	
+	public void loadProgressionFromFile(File chosenFile) throws IOException{
+		this.level.loadProgressionFromFile(chosenFile);
+	}
 	public void turn(int i, int j) {
 		level.turn(i, j);
 	}

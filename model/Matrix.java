@@ -1,6 +1,12 @@
 package model;
 
-public class Matrix {
+import java.io.Serializable;
+
+public class Matrix implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3324156753937758963L;
 	private int rows;
 	private int cols;
 	private char[][]matrix = null;
