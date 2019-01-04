@@ -35,6 +35,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -51,8 +52,8 @@ public class MainViewController implements Initializable, Observer{
 	private static final Integer STARTTIME = 0;
 	Integer steps = 0;
 	private IntegerProperty playDuration = new SimpleIntegerProperty(STARTTIME);
-	private IntegerProperty PORT = new SimpleIntegerProperty();
-	private StringProperty SERVER = new SimpleStringProperty();
+	public StringProperty PORT = new SimpleStringProperty("8080");
+	public StringProperty SERVER = new SimpleStringProperty("localhost");
 	
 	
 	
@@ -142,7 +143,7 @@ public class MainViewController implements Initializable, Observer{
 //	}
 
 	public void saveLevel() throws IOException {
-	
+		durationTimer.pause();
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Save Level");
 		fc.setInitialDirectory(new File("c:/"));
@@ -153,18 +154,14 @@ public class MainViewController implements Initializable, Observer{
 		if (chosenFile == null) return;
 		
 		levelViewModel.saveLevelProgressionToFile(chosenFile);
-//		try {
-//			PrintWriter pw = new PrintWriter(chosenFile);
-//			pw.println("Steps:" + steps);
-//			pw.println("Duration:" + playDuration);
-//			for (int i=0; i < pipeGameDrawer.getHeight(); i++) {
-//				pw.println(new String(pipeGameDrawer.getMatrix())
-//			}
-//		}
+		pipeGameDrawer.redraw();
+		durationTimer.play();
+
 	}
 
 	public void loadSavedGame() throws IOException {
-	
+		
+		
 		FileChooser fileChooser = new FileChooser();
 
 		//Extension filter
@@ -180,16 +177,15 @@ public class MainViewController implements Initializable, Observer{
 
 		
 		levelViewModel.loadProgressionFromFile(chosenFile);
+		pipeGameDrawer.redraw();
+		durationTimer.play();
 	}
 	
 	
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-//		if (level != null) {
-//			pipeGameDrawer.setMatrix(level.matrix);
-//		}
-		
+	
 		pipeGameDrawer.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
@@ -262,11 +258,16 @@ public class MainViewController implements Initializable, Observer{
 	public void configureSettings() {		
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader();
-			fxmlLoader.setLocation(getClass().getResource("./settings.fxml"));
-			Scene scene = new Scene(fxmlLoader.load(), 400, 200);
+			fxmlLoader.setController(this);
+			BorderPane root = (BorderPane)fxmlLoader.load(getClass().getResource("settings.fxml").openStream());
+			Scene scene = new Scene(root, 400, 200);
 			Stage stage = new Stage();
 			stage.setTitle("Server Settings");
 			stage.setScene(scene);
+			
+			serverTextField.setText(SERVER.get());
+			portTextField.setText(PORT.get());
+
 			stage.show();
 		} catch(IOException e) {
 			e.printStackTrace();
@@ -277,7 +278,7 @@ public class MainViewController implements Initializable, Observer{
 	public void solve() {
 		try {
 			// TODO read from xml config
-			serverSolver = new HTTPServerSolver("http", "localhost", 8080, "/pipeGameServer/solve");
+			serverSolver = new HTTPServerSolver("http", SERVER.get(), Integer.parseInt(PORT.get()), "/pipeGameServer/solve");
 		} catch (MalformedURLException | URISyntaxException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -320,5 +321,11 @@ public class MainViewController implements Initializable, Observer{
 		
 	@Override
 	public void update(Observable o, Object arg) {
+	}
+	
+	public void saveSettings() {
+		System.out.println(serverTextField.getText());
+		SERVER.set(serverTextField.getText());
+		PORT.set(portTextField.getText());
 	}
 }

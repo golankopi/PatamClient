@@ -114,6 +114,9 @@ public class Level extends Observable{
 			this.moves = dw.getSteps();
 			this.time = dw.getPlayDuration();
 			
+			setChanged();
+			notifyObservers();
+			
 
 		}catch (Exception e) {
 			e.printStackTrace();
